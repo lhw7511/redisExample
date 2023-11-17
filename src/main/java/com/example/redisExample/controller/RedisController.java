@@ -3,6 +3,8 @@ package com.example.redisExample.controller;
 import com.example.redisExample.entity.Member;
 import com.example.redisExample.service.RedisMemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +15,8 @@ import java.util.Map;
 public class RedisController {
 
     private final RedisMemberService redisMemberService;
+
+    private final RedisTemplate<String ,Object> redisTemplate;
 
     @GetMapping("/member/{memberId}")
     public ResponseEntity<?> getMemberInfo(@PathVariable("memberId") Long memberId) {
@@ -41,5 +45,11 @@ public class RedisController {
     public ResponseEntity<?> deleteMember(@PathVariable("memberId") Long memberId) {
         redisMemberService.removeMember(memberId);
         return ResponseEntity.ok("삭제 완료");
+    }
+
+    @GetMapping("/templateTest")
+    public void templateTest(){
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set("testKey","testValue");
     }
 }
